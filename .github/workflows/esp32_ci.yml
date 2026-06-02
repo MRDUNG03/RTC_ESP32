@@ -30,3 +30,21 @@ jobs:
     # 4. Tự động chạy lệnh biên dịch dự án
     - name: Run PlatformIO Build
       run: pio run
+# gom file FW.bin , đổi tên cho dễ dàng quản lý
+    - name: Prepare Artifact
+      run: |
+        mkdir -p release_files
+        cp .pio/build/*/firmware.bin release_files/esp32_rtc_firmware.bin
+        # Tự động tạo Release trên GitHub và đính kèm file .bin (Chỉ chạy khi bạn tạo TAG)
+    - name: Create GitHub Release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v2
+      with:
+        files: release_files/esp32_rtc_firmware.bin
+        name: Release ${{ github.ref_name }}
+        tag_name: ${{ github.ref }}
+        body: |
+          Bản cập nhật tự động cho dự án RTC ESP32.
+          - File đính kèm: `esp32_rtc_firmware.bin`
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
