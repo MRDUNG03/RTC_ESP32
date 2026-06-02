@@ -1,5 +1,6 @@
 #include "wifi_config.h"
 #include "rtc.h"
+#include "ota.h"
 
 void setup()
 {
@@ -38,7 +39,8 @@ void setup()
     // Không có Internet -> Bỏ qua bước NTP, lấy thẳng thời gian của DS3231 nạp vào ESP32
     syncRtcToEsp32Internal();
   }
-
+// Chỉ cần gọi hàm này, nó tự lo việc kết nối Wifi và cập nhật phần mềm ngầm
+  check_and_update_ota(ssid, password, FIRMWARE_VERSION);
   Serial.println("=============================================");
   Serial.println("Chế độ: Bắt đầu tiến trình loop()...");
 }
